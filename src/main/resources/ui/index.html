@@ -1,0 +1,117 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Data Process</title>
+<link rel="icon" href="icon.png" type="image/x-icon">
+<link rel="shortcut icon" href="icon.png" type="image/x-icon">
+<script src="js/vue.2.2.2.min.js"></script>
+<script src="js/jquery-1.11.0.js"></script>
+
+
+<style>
+html {
+	height: 100%;
+}
+
+body {
+	background: linear-gradient(to bottom, #082E54, #082E00);
+	color: #082E54;
+	font-size: 20px;
+	height: 100%;
+	margin: 0px;
+	padding: 0px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 100%;
+}
+
+.loginbox {
+	background: linear-gradient(to bottom, green, white);
+	width: 50%;
+	min-width: 500px;
+	max-width: 650px;
+	background-color: gray;
+	padding: 20px;
+	border-radius: 3px;
+}
+
+.column-name {
+	display: inline-block;
+	width: 150px;
+}
+
+.sys-name {
+	font-weight: bold;
+	font-size: 30px;
+	margin-bottom: 10px;
+	background-image: linear-gradient(to right, #082E54, #EEE, blue);
+	-webkit-background-clip: text;
+	color: transparent;
+	background-clip: text;
+}
+</style>
+</head>
+
+<body>
+
+
+	<div class="loginbox" id="app">
+		<div class="sys-name">Data Process System</div>
+		<div class="sys-name">数据处理</div>
+		<div>
+			<span class="column-name">User Name: </span><input
+				placeholder="User Name" maxlength="30" id="userNameInput" />
+		</div>
+		<div>
+			<span class="column-name">Password:</span><input
+				placeholder="Password" type="password" maxlength="50"
+				id="passwordInput" />
+		</div>
+		<div style="margin-top: 20px">
+			<span class="column-name"> </span>
+			<button @click="onLogin">Login</button>
+		</div>
+	</div>
+
+
+	<script> 
+	new Vue({
+		  el: '#app',
+		  data: {
+		    message: 'Hello Vue.js!' 
+		  },
+		  methods:{
+			  onLogin(){  
+				  let param={
+						  userName:$("#userNameInput").val().trim(),
+						  password:$("#passwordInput").val().trim(), 
+				  };
+				  $("#userNameInput").val("");
+				  $("#passwordInput").val(""); 
+				  $.ajax({
+					  url:"/v1/session/create",
+					  type:"POST",
+					  contentType:"application/json",
+					  data:JSON.stringify(param),
+					  success:(txt)=>{
+						  let rs = JSON.parse(txt);
+						  if(rs?.status==="user_invalid"){
+							  return;
+						  }
+						  if(rs.token){
+							  localStorage.setItem("token",rs.token);
+							  window.location.href="/process.html";
+						  } 
+					  }
+				  })
+				 
+			  },
+		  }
+		})
+	</script>
+</body>
+
+</html>

@@ -1,0 +1,1138 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>数据处理</title>
+<link rel="icon" href="icon.png" type="image/x-icon">
+<link rel="shortcut icon" href="icon.png" type="image/x-icon">
+<script src="js/vue.2.2.2.min.js"></script>
+<script src="js/jquery-1.11.0.js"></script>
+<style>
+html {
+	height: 100%;
+}
+
+body {
+	background: linear-gradient(to bottom, #2F2F2F, #082E00);
+	font-size: 16px;
+	height: 100%;
+	margin: 0px;
+	padding: 0px;
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+}
+
+.loginbox {
+	background: linear-gradient(to bottom, green, white);
+	width: 50%;
+	min-width: 500px;
+	max-width: 650px;
+	background-color: gray;
+	padding: 20px;
+	border-radius: 3px;
+}
+
+.column-name {
+	display: inline-block;
+	width: 150px;
+}
+
+.sys-name {
+	font-weight: bold;
+	font-size: 30px;
+	margin-bottom: 10px;
+	background-image: linear-gradient(to bottom,  #082E54, #EEE, green);
+	-webkit-background-clip: text;
+	color: transparent;
+	background-clip: text;
+}
+
+.top {
+	min-height: 50px;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.top-left {
+	min-height: 50px;
+	display: flex;
+	justify-content: left;
+	align-items: center;
+}
+
+.link-btn {
+	cursor: pointer;
+	text-decoration: underline;
+	transition: 0.3s;
+}
+
+.link-btn:hover {
+	color: blue;
+	transition: 0.3s;
+	margin-left: 10px;
+}
+
+.job-runable {
+	background-color: white;
+	color: #2C8084;
+}
+
+.job-disable {
+	background-color: #CCC;
+	text-decoration: line-through;
+}
+
+.process-current {
+	background-color: #2A6B70;
+	color: white;
+}
+
+.api-post {
+	background-color: olive;
+	color: white;
+}
+
+.api-get {
+	background-color: activeborder;
+	color: green;
+}
+
+.job-list {
+	height: 450px;
+	overflow: scroll;
+	max-width: calc(100vw - 150px);
+}
+
+.detail-content {
+	height: calc(100vh - 500px);
+	max-width: calc(100vw - 150px);
+	overflow: scroll;
+	background: #2F2F2F;
+}
+
+.script-content {
+	height: calc(100vh - 500px);
+	max-width: calc(100vw - 150px);
+	overflow: scroll;
+	background: white;
+}
+
+.job-controller {
+	background-image: linear-gradient(to bottom, white, gray);
+	height: 35px;
+	padding-left: 10px;
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+	padding-right: 5px;
+	position: fixed;
+	width: 100%;
+	z-index: 1000;
+}
+
+.job-title {
+	font-weight: bold;
+	margin-bottom: 10px;
+	background-image: linear-gradient(to right, blue, green);
+	-webkit-background-clip: text;
+	color: transparent;
+	background-clip: text;
+}
+
+.no-detail {
+	height: calc(100vh - 500px);
+	max-width: calc(100vw - 150px);
+	background-image: linear-gradient(to bottom, white, gray);
+	color: gray;
+}
+
+.btn-current {
+	background-color: green;
+	color: white;
+}
+
+.btn-hide {
+	background-color: gray;
+	color: white;
+}
+
+.log-screen {
+	padding-top: 45px;
+	padding-left: 10px;
+	font-size: 16px;
+	background-color: #2F2F2F;
+	color: #A4B0C0;
+	padding-bottom: 10px;
+}
+
+.script-screen {
+	padding-top: 45px;
+	padding-left: 10px;
+	background-color: white;
+}
+
+.icon {
+	width: 30px;
+	height: 30px;
+	margin-right: 5px;
+}
+
+.sub-title {
+	font-size: 12px;
+}
+
+.left-layout {
+	width: 150px;
+	background-color: #EEE;
+	resize: both;
+	border-right: 3px solid #515658;
+}
+
+.main {
+	display: flex;
+	flex-direction: column;
+}
+
+.table1 {
+	border-collapse: collapse;
+	border: 0;
+}
+
+.smell-content {
+	font-size: 12px;
+}
+
+.btn-start {
+	background-color: #2C8084;
+	color: white;
+}
+
+.btn-clean {
+	background-color: red;
+	color: white;
+}
+
+.keywordsinput {
+	width: 500px;
+	height: 30px;
+	margin-right: 20px;
+	padding-left: 10px;
+}
+
+.icon-layout {
+	width: 154px;
+	display: flex;
+	justify-content: center;
+}
+
+.logSearchLayout {
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	z-index: 1001;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	pointer-events: none;
+	flex-direction: column;
+}
+
+.logSearchedContent {
+	width: 50%;
+	height: 50%;
+	background-color: #EEE;
+	border: 3px solid gray;
+	pointer-events: auto;
+	border-radius: 3px;
+	display: none;
+	position: absolute;
+}
+
+.BtnlogSearchedContentClosed {
+	background-color: gray;
+	color: white;
+	position: absolute;
+	right: 5px;
+	top: 2px;
+}
+
+.logContent {
+	width: 100%;
+	height: 100%;
+	overflow: scroll;
+	background-color: #2F2F2F;
+	color: #A4B0C0;
+}
+
+.sysstatus {
+	font-size: 12px;
+	color: white;
+}
+
+.exit {
+	color: white;
+	margin-right: 10px;
+	cursor: pointer;
+	transition: 0.3s;
+	font-size: 14px;
+}
+
+.exit:hover {
+	color: red;
+	transition: 0.3s;
+	font-size: 16px;
+}
+
+.version {
+	position: absolute;
+	left: 20px;
+	bottom: 10px;
+	color: #CCC;
+	font-size: 14px;
+}
+
+.logTitle {
+	line-height: 30px;
+	height: 30px;
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	width: 100%;
+	background-color: silver;
+	border-bottom: 2px solid gray;
+}
+
+.listened-icon {
+	height: 15px;
+	width: 15px;
+	font-size: 0px;
+	background-image: linear-gradient(to right, blue, green);
+	border-radius: 50%;
+	transition: 0.3s;
+}
+
+.listened-icon:hover {
+	height: 18px;
+	transition: 0.3s;
+	width: 18px;
+	cursor: pointer;
+}
+
+.column-name {
+	font-weight: bold;
+	line-height: 30px;
+}
+#apiResultLayout{
+    display: none;
+}
+#apiResult{
+	width: 500px;
+	height:100px;
+	overflow: scroll;
+	background-color: #2F2F2F;
+	color: #A4B0C0;
+	padding: 10px;
+	border-radius: 3px;
+}
+#MemoryUsedDiv{
+	display: none;
+}
+.selected-tab{
+	color: white;
+	background-color: #2A6B70;
+	padding-left: 5px;
+	padding-right: 5px;
+	border-radius: 5px;
+	margin-top: 3px;
+	margin-bottom: 3px;
+}
+.hasPreCode{
+	color: red;	
+}
+</style>
+<script type="text/javascript">
+$(function(){ 
+	let keywordsinput = document.getElementById("keywordsinput");
+	keywordsinput.addEventListener("keydown",function(evt){ 
+		if(evt.key==="Enter"){
+			let kw = $("#keywordsinput").val();
+			
+			//match the traceid format ,detect user want to search logs
+			if(/^[TR]{1,1}[0-9]+$/.test(kw)){
+				onlogSearch(kw); 
+				//$("#keywordsinput").val(""); 
+			}else{
+				//this is vue method ,mounted in vue ,so can invoke in native js function
+				onFilterJobs(kw);
+			}
+
+		} 
+	}) 
+	
+	$("#BtnlogSearchedContentClosed").click(function(){
+		$("#logSearchedContent").slideUp();  
+	});
+	$("#requestFormLayoutClosedBtn").click(function(){
+		$("#requestFormLayout").slideUp();   
+	});
+	onFetchStatus()	
+	  setInterval(()=>{
+		  onFetchStatus()
+	  },1500);
+	
+	$("#btnexit").click(function(){
+		
+		onExit();
+	});
+	
+})
+
+
+function onExit(){ 
+	  reqget("/v1/session/clear",(data)=>{
+		  window.location.href="/"; 
+	  }) 
+}
+
+function onFetchStatus(){
+	  let url="/v1/status?t="+new Date();
+	  reqget(url,(data)=>{
+		  $("#heapUsed").text(data?.heapUsed||"");
+		  $("#heapInit").text(data?.heapMax||"");
+		  $("#cpuload").text(data?.systemLoadAverage?.toFixed(2)||"");
+		  
+		   
+	  },()=>{})
+	
+} 
+function onlogSearch(traceid){
+	  let url="/v1/logs/trace?traceid="+traceid;
+	  $("#logContent").text("Loading...");	
+
+
+	  $("#logSearchedContent").slideDown();
+	  reqget(url,(data)=>{
+		  let logs = data?.logs||"No Found Any Log";
+		  let pre = $("<pre style='margin:10px; margin-top:40px;'></pre>");
+		  pre.text(logs);
+		  $("#logContent").text("");
+		  $("#logContent").append(pre);  
+	  },()=>{})
+}
+
+function reqget(url,success,fail){ 
+	  $.ajax({
+		  url:url,
+		  method:"GET",
+		  headers:{
+			  "x-token":localStorage.getItem("token")
+		  },
+		  success:(data)=>{
+			  if(success){
+				  success(JSON.parse(data));
+			  } 
+		  },
+		  error:(xhr,status,error)=>{ 
+			  if(fail){
+				  fail()
+			  }
+		  }
+	  })
+}
+ 
+
+</script>
+</head>
+
+<body>
+	<div id="app">
+
+		<div class="version">版本 {{version}}</div>
+
+		<div id="logSearchLayout" class="logSearchLayout">
+			<div id="logSearchedContent" class="logSearchedContent">
+				<div class="logTitle">&nbsp;&nbsp;日志</div>
+				<button class="BtnlogSearchedContentClosed"
+					id="BtnlogSearchedContentClosed">关闭</button>
+				<div id="logContent" class="logContent"></div>
+			</div>
+
+			<div id="requestFormLayout" class="logSearchedContent">
+				<div class="logTitle">&nbsp;&nbsp;请求</div>
+				<button class="BtnlogSearchedContentClosed"
+					id="requestFormLayoutClosedBtn">关闭</button>
+				<div id="requestFormContent" class="requestFormContent">
+
+					<table style="margin-top: 50px; margin-left: 20px;">
+						<tr>
+							<td align="right" style="width: 100px;"><span
+								class="column-name">DEBUG</span></td>
+							<td> 
+								<input type="checkbox" id="debugInput" />
+								
+								<span v-if="currentJob.hasPreCode===true"> 预发代码 <input type="checkbox" id="PreEnvSelected" checked="checked" /> 
+									<button  style="background-color: red;color:white;" @click="onMergePreCode()" id="btnsendrequest">合并</button>
+								</span> 
+								
+							</td>
+						</tr>
+					
+						<tr>
+							<td align="right" style="width: 100px;"><span
+								class="column-name">功能</span></td>
+							<td>{{currentJob.title}}</td>
+						</tr>
+						<tr v-if="currentJob.auth && currentJob.auth.toLowerCase().trim()==='jwt/authorization'">
+							<td align="right" style="width: 100px;"><span
+								class="column-name">JWT</span></td>
+							<td><input id="jwtInput" value="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOiJZMTQyMTIiLCJEYXRhUGVybWlzc2lvbnMiOiJHMTQwNjAiLCJVc2VyTmFtZSI6IjfmnIgzMeWPt-a1i-ivlSIsIlBob25lTnVtYmVyIjoiMTk5NTcyMzc1OTAiLCJQZXJtaXNzaW9uR3JvdXBJZCI6IjVjMjRjNWYxYzM2OTQ5NTI4ZTBhZDU5ZDBkNWY0YjEyIiwiVXNlclR5cGUiOjIsImlhdCI6MTcyMTYxNzcxOCwibmJmIjoxNzIxNjE3NzE4LCJleHAiOjE3MjI5MTM3MTgsImlzcyI6InRzdyIsImF1ZCI6InRzdyJ9.KRo_naia9w5qNh5Mq56R33y5KAZUaMv_KMbfzM6hCis" style="width:500px" /></td>
+						</tr>
+						<tr v-if="currentJob.auth && currentJob.auth.toLowerCase().trim()==='token/console-token'">
+							<td align="right" style="width: 100px;"><span
+								class="column-name">console-token</span></td>
+							<td><input id="tokenInput" value="ac44a66eb01648fb89b0c3fd07adcf32@522d829e5a6b932fabdd36ab74147491b57449ed3e7a4b73bc1b0b505af97fefNjAyMDIyNTc1NDMyNTM0NTQzMTg0NjY1NTE1MzA2OTI0NjM2NzU0NDI1MDE5NDMyMDU0MjEzMzk2MA==" style="width:500px" /></td>
+						</tr>
+						
+						<tr>
+							<td align="right"><span class="column-name">租户ID</span></td>
+							<td><input id="merchantIdInput" value="default" /></td>
+						</tr>
+						<tr>
+							<td align="right"><span class="column-name">接口</span></td>
+							<td>
+								<div v-if="currentJob.method==='POST'">{{currentJob.method}}
+									/v1/api/{租户ID}/{{currentJob.path1}}/{{currentJob.path2}}/{{currentJob.path3}}</div>
+								<div v-if="currentJob.method==='GET'">{{currentJob.method}}
+									/v1/api/{租户ID}/{{currentJob.path1}}/{{currentJob.path2}}/{ID}</div>
+							</td>
+						</tr>
+						<tr v-if="currentJob.method==='POST'">
+							<td align="right"><span class="column-name">请求体</span></td>
+							<td><textarea id="postParamInput" style="width: 500px; height: 100px;" >{{currentJob.mockparam}}</textarea>
+							</td>
+						</tr>
+						<tr v-if="currentJob.method==='GET'">
+							<td align="right"><span class="column-name">ID</span></td>
+							<td><input id="path3input" value="test" style="width: 500px;" /></td>
+						</tr>
+						<tr v-if="currentJob.method==='GET'">
+							<td align="right"><span class="column-name">URL参数</span></td>
+							<td><input id="urlparaminput" style="width: 500px;" /></td>
+						</tr>
+
+						<tr>
+							<td></td>
+							<td>
+								<button style="background-color: orange;" @click="onSendRequest()" id="btnsendrequest">发送</button>
+								
+								<button style="background-color: gray; color:white;" @click="onCreateCurl()" id="btnCreateCurl">复制CURL</button>
+								<button style="background-color: gray; color:white;" @click="onCopyResult()"  >复制响应</button>
+								<span id="CopySuccessSpan" style="display: none;color:blue;">复制成功</span>
+								
+								
+								
+							</td>
+						</tr>	
+						<tr id="apiResultLayout">
+							<td align="right"><span class="column-name">结果</span></td>
+							<td>
+								<div id="apiResult"></div>
+								<div id="MemoryUsedDiv">
+									使用内存:<span id="MemoryUsedAmount" style="color:red"></span>KB
+								</div>
+							</td>
+							
+						</tr>
+											 
+					</table>
+
+				</div>
+			</div>
+
+		</div>
+
+		<!--  -->
+
+		<div class="top">
+
+
+			<div class="top-left">
+
+				<div class="icon-layout">
+					<img src="icon.png" class="icon" />
+					<div>
+						<div class="sysstatus" style="font-weight: bold;">
+							内存 <span id="heapUsed" style="color: #C44B33">-</span>/<span
+								id="heapInit" style="color: #279894">-</span>M
+						</div>
+						<div class="sysstatus">
+							CPU <span id="cpuload">-</span>
+						</div>
+					</div>
+
+				</div>
+				<div>
+					<input class="keywordsinput" id="keywordsinput"
+						placeholder="请求ID、任务名字、任务ID (回车查询) ↵" />
+				</div>
+				<div class="sys-name">DATA PROCESS SYSTEM {{version}}</div>
+			</div>
+			<div>
+				<a class="exit" id="btnexit">退出</a>
+			</div>
+
+		</div>
+		<div style="flex-grow: 1; background-color: #EEE; display: flex;">
+			<div class="left-layout">
+				<ul>
+					<li class="link-btn" style="color: green; font-weight: bold;"><a
+						@click="onLoadJobs(1)" :class="status===1?'selected-tab':''">任务 ({{jobRunnableCount}})</a></li>
+					<li class="link-btn"
+						style="backgroborder-color: olive; font-weight: bold;"><a
+						@click="onLoadJobs(2)" :class="status===2?'selected-tab':''">接口 ({{apiCount}})</a></li>
+					<li class="link-btn"
+						style="backgroborder-color: olive; font-weight: bold;"><a
+						@click="onLoadJobs(3)" :class="status===3?'selected-tab':''">监听 ({{mqListenerCount}})</a></li>
+					<li class="link-btn"><a @click="onLoadJobs(0)">暂停
+							({{jobDisableCount}})</a></li>
+					<li class="link-btn" ><a @click="onReloadConfig()">更新生产</a></li>
+					<li class="link-btn" style="margin-top: 10px;"><a @click="onPreloadConfig()">更新预发</a></li>
+				</ul>
+
+			</div>
+			<div style="flex-grow: 1" class="main">
+				<div class="job-list" style="">
+					<table class="table1" border="1" v-if="jobType==='JOB'"
+						style="width: 100%">
+						<thead>
+							<tr>
+								<th width="50">序</th>
+								<th>任务名称</th>
+								<th width="300">ID</th>
+								<th width="60">作者</th>
+								<th width="120">CRON</th>
+								<th width=100>成功时间</th>
+								<th width="50">成功</th>
+								<th width="50">耗时</th>
+								<th width="50">失败</th>
+								<th width="80">Version</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr v-for="(item,index) in jobs" :key="index" v-show="item.show"
+								:class="iscurrentjob(item)?'process-current':item.runable||item.apiAccessable?'job-runable':'job-disable'">
+								<td>{{index+1}}</td>
+								<td><a class="link-btn" @click="onDetail(item)">{{item.title}}</a><span v-if="item.stat.running===true"  style="color:red;">  执行中...  </span></td>
+								<td>
+									<div class="sub-title">{{item.id}}</div>
+								</td>
+								<td>{{item.author}}</td>
+								<td>{{item.cron}}</td>
+								<td class="smell-content">{{item.stat.gmtLastSuccess}}</td>
+								<td class="smell-content" align="right">{{item.stat.success}}</td>
+								<td class="smell-content" align="right">{{item.stat.successAvgCost}}</td>
+								<td class="smell-content" align="right">{{item.stat.fail}}</td>
+								<td class="smell-content">{{item.md5.substring(0,8)}}</td>
+							</tr>
+						</tbody>
+					</table>
+					<table class="table1" border="1" v-if="jobType==='API'"
+						style="width: 100%">
+						<thead>
+							<tr>
+								<th width="50">序</th>
+								<th>接口名称</th>
+								<th width="600">接口地址</th>
+								<th width="60">作者</th>
+								<th width="50">成功</th>
+								<th width="50">失败</th>
+								<th width="70">平均消耗</th>
+								<th width="70">最大消耗</th>
+								<th width="80">Version</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr v-for="(item,index) in jobs" :key="index" v-show="item.show"
+								:class="iscurrentjob(item)?'process-current':item.method==='POST'?'api-post':'api-get'">
+								<td>{{index+1}}</td>
+								<td><span v-if="item.hasPreCode===true" class="hasPreCode">【预发就绪】</span><a class="link-btn" @click="onDetail(item)">{{item.title}}</a></td>
+								<td>
+									<div v-if="item.method==='POST'">{{item.method}}
+										/v1/api/{租户ID}/{{item.path1}}/{{item.path2}}/{{item.path3}}</div>
+									<div v-if="item.method==='GET'">{{item.method}}
+										/v1/api/{租户ID}/{{item.path1}}/{{item.path2}}/{ID}</div>
+								</td>
+								<td class="smell-content">{{item.author}}</td>
+								<td class="smell-content" align="right">{{item.stat.success}}</td>
+								<td class="smell-content" align="right">{{item.stat.fail}}</td>
+								<td class="smell-content" align="right">{{item.stat.successAvgCost}}</td>
+								<td class="smell-content" align="right">{{item.stat.successMaxCost}}</td>
+								<td class="smell-content">{{item.md5.substring(0,8)}}</td>
+							</tr>
+						</tbody>
+					</table>
+					<table class="table1" border="1" v-if="jobType==='MQ'"
+						style="width: 100%">
+						<thead>
+							<tr>
+								<th width="50">序</th>
+								<th width="50">状态</th>
+								<th width="300">任务名称</th>
+								<th>TOPICS</th>
+								<th width="300">ID</th>
+								<th width="60">作者</th>
+								<th width=100>成功时间</th>
+								<th width="50">成功</th>
+								<th width="50">耗时</th>
+								<th width="50">失败</th>
+								<th width="80">Version</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr v-for="(item,index) in jobs" :key="index" v-show="item.show"
+								:class="iscurrentjob(item)?'process-current':item.runable">
+								<td>{{index+1}}</td>
+								<td valign="middle" align="center">
+									<div v-if="item.listened" class="listened-icon"
+										title="该任务处于监听成功状态"></div>
+								</td>
+								<td><a class="link-btn" @click="onDetail(item)">{{item.title}}</a></td>
+								<td>{{item.topics}}</td>
+								<td>
+									<div class="sub-title">{{item.id}}</div>
+								</td>
+								<td>{{item.author}}</td>
+								<td class="smell-content">{{item.stat.gmtLastSuccess}}</td>
+								<td class="smell-content" align="right">{{item.stat.success}}</td>
+								<td class="smell-content" align="right">{{item.stat.successAvgCost}}</td>
+								<td class="smell-content" align="right">{{item.stat.fail}}</td>
+								<td class="smell-content">{{item.md5.substring(0,8)}}</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<div
+					:class="detail_type==='script'||detail_type==='htmlsee'?'script-content':'detail-content'"
+					v-if="currentJob.id">
+					<div class="job-controller">
+						<div>
+							<button class="btn-start" v-if="currentJob.runable===true"
+								@click="onExecute()">执行</button>
+							<button class="btn-start" v-if="currentJob.api===true"
+								@click="onInvokeApi()">调用</button>
+							<button :class="detail_type==='script'?'btn-current':'btn-hide'"
+								@click="onChangeDetailMode('script')">代码</button>
+							<button :class="detail_type==='htmlsee'?'btn-current':'btn-hide'"
+								@click="onChangeDetailMode('htmlsee')">说明</button>
+								
+							<button :class="detail_type==='log'?'btn-current':'btn-hide'"
+								@click="onChangeDetailMode('log')">日志</button>
+							<button class="btn-clean" v-if="detail_type==='log'"
+								@click="onCleanLog()">清除</button>
+							<span class="job-title">【{{currentJob.id}}】</span> <span
+								class="job-title">{{currentJob.cron}}</span> <span
+								class="job-title">{{currentJob.title}}</span> <span
+								class="job-title"> Version: {{currentJob.md5}}</span>
+						</div>
+
+
+					</div>
+					<div v-if="detail_type==='script'" class="script-screen">
+						<pre>{{currentJob.hasPreCode?currentJob.preCode.content:currentJob.content}}</pre>
+					</div>
+					<div v-if="detail_type==='htmlsee'" class="script-screen">
+						<div v-if="!currentJob.htmlsee">暂无</div> 
+						<div style="position: relative; z-index: 1">
+							<div v-if="currentJob.htmlsee" v-html="currentJob.htmlsee"></div>
+						</div>
+						
+					</div>
+					<div id="log-screen"
+						v-if="detail_type==='log'&&currentJob.id===log.jobId"
+						class="log-screen">
+						<pre>{{log.logs}} </pre>
+					</div>
+				</div>
+				<div v-else class="no-detail">
+					<div style="margin: 10px;">点击某个任务查看详情!</div>
+				</div>
+
+			</div>
+		</div>
+	</div>
+
+
+	<script> 
+	new Vue({
+		  el: '#app',
+		  data: {
+		    message: 'Hello Vue.js!',
+		    jobs:[],
+		    jobDisableCount:0,
+		    jobRunnableCount:0,
+		    mqListenerCount:0,
+		    apiCount:0,
+		    status:0,
+		    jobType:"",
+		    currentJob:{},
+		    detail_type:"script",
+		    log:{
+		    	jobId:"",
+		    	logs:"",
+		    },
+		    version:"",
+		    memoryused:"",
+		  },
+		  created(){
+			  let processType = localStorage.getItem("ProcessType");
+			  if(processType){
+				  this.status=parseInt(processType); 
+			  } 
+			  this.onLoadJobs(this.status||1);
+			  setInterval(()=>{
+				  this.onChangeDetailMode()
+			  },3000);
+			  try{
+				  this.onLoadVersion();
+				  
+			  }catch(e){
+				  
+			  }
+		  },
+		  mounted(){
+			  
+			  window.onFilterJobs = this.onFilterJobs 
+			  let kw = localStorage.getItem("Keyword");
+			  if(kw){
+				  $("#keywordsinput").val(kw); 	
+			  } 
+
+			   
+			  
+		  },
+		  methods:{
+			  onCopyResult(){ 
+				let txt = $("#apiResult").html();
+				navigator.clipboard.writeText(txt).then(()=>{ 
+						$("#CopySuccessSpan").show();
+				},()=>{
+						alert("复制失败");   
+				});
+			  },
+			  //生成CURL以帮助快速的调试
+			  onCreateCurl(){
+				$("#CopySuccessSpan").hide();
+				let urls = window.location.href.split("/")  
+				let curlstr="curl ";
+				curlstr +=urls[0]+"//"+urls[2]+"/v1/api/"+$("#merchantIdInput").val().trim()+"/"+this.currentJob.path1+"/"+this.currentJob.path2+"/"+this.currentJob.path3;
+				curlstr +=" -X "+this.currentJob.method;
+				if(this.currentJob.method==="POST"){
+					curlstr += ' -H "Content-Type: application/json"';
+					
+				}  
+				
+				let jwt = $("#jwtInput")?.val()?.trim(); 
+				//传JWT密文
+				if(jwt){
+					curlstr += ' -H "Authorization: Bearer '+jwt+'"'; 
+				} 
+				 
+				let token = $("#tokenInput")?.val()?.trim(); 
+				if(token&&this.currentJob.auth){ 
+					curlstr += ' -H "' +(this.currentJob.auth?.split("/")?.[1]||"Token")+': '+token+'"' 
+				}
+				 
+				//触发预发代码
+				if($("#PreEnvSelected").is(":checked")===true){
+					curlstr += ' -H "x-precode: enable"'
+				}
+				
+				if(this.currentJob.method==="POST"){
+					let postparam = $("#postParamInput").val().trim();
+					postparam = JSON.stringify(JSON.parse(postparam))
+					postparam = postparam.replaceAll('"','""');
+					curlstr += ' --data-raw "'+postparam+'"'; 
+				}   
+				
+				
+				navigator.clipboard.writeText(curlstr).then(()=>{ 
+					$("#CopySuccessSpan").show();
+				},()=>{
+					alert("复制失败");   
+				});
+				
+			  },
+			  showMemoryUsed(usedInfo){
+				  if(usedInfo){
+					  let sizekb = (parseFloat(usedInfo)/1024).toFixed(0);
+					  $("#MemoryUsedAmount").html(sizekb);
+					  $("#MemoryUsedDiv").show(); 
+				  }else{
+					  $("#MemoryUsedAmount").html("-");
+					  $("#MemoryUsedDiv").hide();
+				  }
+				  
+			  },
+			  onSendRequest(){
+				  this.showMemoryUsed(null);
+				  let url="/v1/api/"+$("#merchantIdInput").val().trim()+"/"+this.currentJob.path1+"/"+this.currentJob.path2;
+				  
+				  let jwt = $("#jwtInput")?.val()?.trim(); 
+				  let headers = {
+						  "x-token":this.getToken() 
+				  };
+				  //传JWT密文
+				  if(jwt){
+					  headers["Authorization"]="Bearer "+jwt;
+				  }
+				  this.memoryused=0;
+				  if($("#debugInput").is(":checked")===true){
+					  headers["x-count-memory-used"]="enable"; 
+				  } 
+				  //触发预发代码
+				  if($("#PreEnvSelected").is(":checked")===true){
+					  headers["x-precode"]="enable"; 
+				  }
+				  
+				  //token
+				  let token = $("#tokenInput")?.val()?.trim(); 
+				  if(token&&this.currentJob.auth){ 
+					  headers[this.currentJob.auth?.split("/")?.[1]||"Token"]=token;
+				  }
+				  
+				  if(this.currentJob.method==="POST"){
+					  url+="/"+this.currentJob.path3;
+					  let param=null;
+					  try{ 
+						  let postparam = $("#postParamInput").val().trim();
+						  if(!postparam){
+							  $("#postParamInput").focus();
+							  return;
+						  }
+						  param=JSON.parse(postparam);
+					  }catch(e){
+						  alert("参数格式错误，需要是JSON格式");
+						  return;
+					  } 
+					  $("#btnsendrequest").prop("disable",true);
+					  $("#apiResultLayout").show();
+					  $("#apiResult").html("<div style='color:red'>处理中...</div>");
+					  $.ajax({
+						  url:url,
+						  method:"POST",
+						  headers:headers,
+						  data:JSON.stringify(param),
+						  contentType:"application/json",
+						  success:(data,st,jqXHR)=>{ 
+							  $("#apiResultLayout").show();
+							  $("#apiResult").text(JSON.stringify(data));
+							  $("#btnsendrequest").prop("disable",false); 
+							  this.showMemoryUsed(jqXHR.getResponseHeader("x-count-memory-used"));
+							  //this.memoryused=jqXHR.getResponseHeader("x-count-memory-used");
+						  },
+						  error:(xhr,status,error)=>{ 
+							  $("#apiResultLayout").show();
+							  $("#apiResult").text(error);
+							  $("#btnsendrequest").prop("disable",false);
+						  }
+					  })
+				  }else{
+					  url+="/"+$("#path3input").val().trim();
+					  let urlparam = $("#urlparaminput").val().trim();
+					  if(urlparam){
+						  url+="?"+urlparam;
+					  } 
+					  $("#btnsendrequest").prop("disable",true);
+					  $("#apiResultLayout").show();
+					  $("#apiResult").html("<div style='color:red'>处理中...</div>");
+					  $.ajax({
+						  url:url,
+						  method:"GET",
+						  headers:headers,
+						  success:(data,st,jqXHR)=>{
+							  $("#apiResultLayout").show();
+							  $("#apiResult").text(JSON.stringify(data));
+							  $("#btnsendrequest").prop("disable",false); 
+							  this.showMemoryUsed(jqXHR.getResponseHeader("x-count-memory-used"));
+							  //this.memoryused=jqXHR.getResponseHeader("x-count-memory-used");
+						  },
+						  error:(xhr,status,error)=>{
+							  $("#apiResultLayout").show();
+							  $("#apiResult").html("<div style='color:red'>"+JSON.stringify(xhr)+"</div>");
+							  $("#btnsendrequest").prop("disable",false); 
+						  }
+					  })
+				  } 
+				  
+			  },
+			  onInvokeApi(){ 
+				  $("#requestFormLayout").slideDown();
+			  },
+			  onFilterJobs(kw){
+				  kw = kw.trim();
+				  //将关链词写入本地，以便可以持久显示
+				  localStorage.setItem("Keyword",kw);
+				  
+				  this.jobs.forEach(job=>{ 
+					  job["show"]=false;
+					  if(job?.title?.indexOf(kw)>-1||job?.id?.indexOf(kw)>-1){
+						  job["show"]=true; 
+					  }
+				  }) 
+			  },
+			  iscurrentjob(job){
+				  let selectid = this.currentJob?.id||""; 
+				  if(!selectid){
+					  return false;
+				  }
+				  return selectid===job.id;
+			  },
+			  onCleanLog(){
+				  this.getRequest("/v1/logsclear?id="+this.currentJob.id,(data)=>{
+					  data = JSON.parse(data);
+					  this.log.jobId=data?.jobId;
+					  this.log.logs=""; 
+				  })
+				  
+			  },
+			  onChangeDetailMode(mode){ 
+				  if(mode){
+				  	this.detail_type=mode; 					  
+				  }
+				  if(!this.currentJob?.id){
+					  return;
+				  }
+				  this.getRequest("/v1/logs?id="+this.currentJob.id,(data)=>{
+					  data = JSON.parse(data);
+					  this.log.jobId=data?.jobId;
+					  this.log.logs=data?.logs||""; 
+				  })
+				  
+				  
+			  },
+			  getToken(){
+				  return localStorage.getItem("token");
+			  },
+			  onLogin(){  
+				  window.location.href="/admin/index.html";
+			  },
+			  onDetail(job){
+				  this.currentJob = job;
+				  this.onChangeDetailMode()
+			  }, 
+			  getRequest(url,successCallback,errorCallback){
+				  $.ajax({
+					  url:url,
+					  method:"GET",
+					  headers:{
+						  "x-token":this.getToken() 
+					  },
+					  success:(data)=>{
+						  if(successCallback){
+							  successCallback(data);  
+						  }
+					  },
+					  error:(xhr,status,error)=>{
+						  if(errorCallback){
+							  errorCallback(xhr)
+						  }
+					  }
+				  })
+				  
+			  },
+			  onLoadJobs(status){  
+				  $("#requestFormLayout").hide(); 
+				  this.getRequest("/v1/jobs", (data)=>{ 
+					    let rs = JSON.parse(data);
+					    let jobs = rs?.jobs||[];
+					    jobs.forEach(job=>{
+					    	job["show"]=true;
+					    	//是否有预发环境代码
+					    	job["hasPreCode"]=rs?.prejobs?.[job.id]?true:false;
+					    	job["preCode"]=rs?.prejobs?.[job.id]||{};
+					    })
+					    console.log("jobs",jobs)
+					    this.jobDisableCount = jobs.filter(item=>item.runable===false&&!item.api).length;
+					    this.jobRunnableCount = jobs.filter(item=>item.runable===true).length;
+					    this.mqListenerCount = jobs.filter(item=>item.jobType==="MQ").length;
+					    this.apiCount = jobs.filter(item=>item.api===true).length;
+					    if(status===1){
+					    	jobs=jobs.filter(item=>item.runable===true);
+					    	this.jobType="JOB";
+					    }else if(status===0){
+					    	jobs=jobs.filter(item=>item.runable===false&&!item.api);
+					    	this.jobType="JOB";
+					    }else if(status===2){
+					    	jobs=jobs.filter(item=>item.api===true);
+					    	this.jobType="API";
+					    }else if(status===3){
+					    	jobs=jobs.filter(item=>item.jobType==="MQ");
+					    	this.jobType="MQ";
+					    }   
+					    this.status=status;
+					    this.jobs = jobs; 
+					    let kw = $("#keywordsinput").val();
+					    if(kw){
+					    	this.onFilterJobs(kw); 
+					    }
+					    localStorage.setItem("ProcessType",status);
+					    //alert(JSON.stringify(this.jobs.list))
+				  },(req)=>{ 
+					  if(req.status===403){ 
+						  window.location.href="/";
+						  return;
+					  }  
+				  });
+			  },
+			  onExecute(){
+				  if(!this.currentJob.id){
+					  return;
+				  }
+				 
+				  this.getRequest("/v1/run?id="+this.currentJob.id,(data)=>{
+					  this.onChangeDetailMode("log");
+					  let rs = JSON.parse(data);
+					  if(rs?.success===false && rs?.isrunning===true){
+						  alert("提交失败，因为上次执行未结束!");
+					  } 
+					  //alert("已提交执行，请观察结果!"); 
+				  })
+				 
+				   
+			  },
+			  onReloadConfig(){ 
+				  this.getRequest("/v1/conf/reload",(data)=>{
+					    alert("已刷新");
+				  }) 
+			  }, 
+			  onPreloadConfig(){
+				  this.getRequest("/v1/conf/prereload",(data)=>{
+					    alert("已刷新");
+				  })
+			  },
+			  onMergePreCode(){
+				  let preJobId = this.currentJob?.preCode?.id;
+				  this.getRequest("/v1/conf/mergePreJob?id="+preJobId,(data)=>{
+					    alert("已合并");
+				  })
+			  },		 
+			  onLogout(){ 
+				  this.getRequest("/v1/session/clear",(data)=>{
+					  window.location.href="/";
+				  }) 
+			  },
+			  onLoadVersion(){
+				  this.getRequest("/v1/version",(data)=>{
+					  this.version = JSON.parse(data)?.version||"0.0.0" 
+				  }) 
+			  },
+		  }
+		})
+	</script>
+</body>
+
+</html>

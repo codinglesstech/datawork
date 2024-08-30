@@ -1,0 +1,31 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Metrics Collect</title>
+<script src="https://cdn.staticfile.org/vue/2.2.2/vue.min.js"></script>
+</head>
+ 
+<body>
+   
+  	<div id="app">
+  	 	{{message}}
+  		<button @click="onLogin">Login</button>
+  	</div>
+	<script >
+	new Vue({
+		  el: '#app',
+		  data: {
+		    message: 'Hello Vue.js!' 
+		  },
+		  methods:{
+			  onLogin(){  
+				  window.location.href="/console/index.html";
+			  },
+		  }
+		})
+	</script>
+</body>
+ 
+</html>

@@ -1,0 +1,36 @@
+server:
+  port: 10108 
+  shutdown: graceful
+  max-http-header-size: 10240
+spring:
+  main:
+    allow-circular-references: true
+    allow-bean-definition-overriding: true
+  lifecycle:
+    timeout-per-shutdown-phase: 10s
+  web:
+    resources:
+      static-locations: classpath:/ui/
+
+codingless:
+  users:
+    - name: 1
+      password: 1
+      role: admin
+    - name: 2
+      password: 2
+      role: 
+  jobs:
+    dir: <dir>
+    upscript: <upscript>
+  jwts:
+    - tenant: <companyId>
+      alg: HmacSHA256
+      secret: <secret>
+  datasources:
+    - id: <id>
+      url: 
+      username: 
+      password: 
+
+
